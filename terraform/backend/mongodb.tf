@@ -86,7 +86,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 resource "aws_key_pair" "ssh_keypair" {
   key_name   = "sjr.pem"  # Replace with your desired key pair name
-  public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
+  #public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
 }
  # EC2 Instance
 resource "aws_instance" "my_instance" {
