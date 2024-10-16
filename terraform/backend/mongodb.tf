@@ -75,7 +75,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port = 27017
     to_port   = 27017
     protocol  = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port = 0
@@ -84,15 +84,16 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
    }
 }
-resource "aws_key_pair" "ssh_keypair" {
-  key_name   = "sjr.pem"  # Replace with your desired key pair name
-  #public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
-}
+#resource "aws_key_pair" "ssh_keypair" {
+#key_name   = "sjr"  # Replace with your desired key pair name
+#public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
+#}
  # EC2 Instance
 resource "aws_instance" "my_instance" {
   ami             = "ami-0fc5d935ebf8bc3bc" # Ubuntu 20.04 LTS
   instance_type   = "t2.micro"
-  key_name        = aws_key_pair.ssh_keypair.key_name
+  key_name	  = "sjr"
+  #key_name        = aws_key_pair.ssh_keypair.key_name
   subnet_id       = aws_subnet.my_subnet_1.id
   security_groups  = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = true
@@ -100,10 +101,10 @@ resource "aws_instance" "my_instance" {
               #!/bin/bash
               apt-get update
               apt-get install gnupg curl
-              curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
-              gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+              curl -fsSL https://pgp.mongodb.com/server-8.0.asc | \
+              gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
               --dearmor
-              echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+              echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
               apt-get update
               apt-get install -y mongodb-org
               systemctl start mongod
