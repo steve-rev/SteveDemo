@@ -90,7 +90,7 @@ resource "aws_security_group" "ec2_sg" {
 #}
  # EC2 Instance
 resource "aws_instance" "my_instance" {
-  ami             = "ami-0fc5d935ebf8bc3bc" # Ubuntu 20.04 LTS
+  ami             = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS
   instance_type   = "t2.micro"
   key_name	  = "sjr"
   #key_name        = aws_key_pair.ssh_keypair.key_name
@@ -106,7 +106,7 @@ resource "aws_instance" "my_instance" {
               --dearmor
               echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
               apt-get update
-              apt-get install -y mongodb-org
+              sudo apt-get install -y mongodb-org
               systemctl start mongod
               systemctl enable mongodb
               EOF
