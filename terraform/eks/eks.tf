@@ -1,61 +1,48 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
+  version = "19.15.1"
 
-  cluster_name                             = var.cluster_name
-  cluster_version                          = var.cluster_version
-  cluster_endpoint_public_access           = true
-  enable_cluster_creator_admin_permissions = true
+  cluster_name                   = local.name
+  cluster_endpoint_public_access = true
 
   cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
     vpc-cni = {
-      before_compute = true
-      most_recent    = true
-      configuration_values = jsonencode({
-        env = {
-          ENABLE_POD_ENI                    = "true"
-          ENABLE_PREFIX_DELEGATION          = "true"
-          POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
-        }
-        nodeAgent = {
-          enablePolicyEventLogs = "true"
-        }
-        enableNetworkPolicy = "true"
-      })
+      most_recent = true
     }
   }
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
+  control_plane_subnet_ids = module.vpc.intra_subnets
 
-  create_cluster_security_group = false
-  create_node_security_group    = false
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    ami_type       = "AL2_x86_64"
+    instance_types = ["t3.small"]
+
+    attach_cluster_primary_security_group = true
+  }
 
   eks_managed_node_groups = {
-    default = {
-      instance_types           = ["t3.small"]
-      force_update_version     = true
-      release_version          = var.ami_release_version
-      use_name_prefix          = false
-      iam_role_name            = "${var.cluster_name}-ng-default"
-      iam_role_use_name_prefix = false
+    amc-cluster-wg = {
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
 
-      min_size     = 3
-      max_size     = 6
-      desired_size = 3
+      instance_types = ["t3.large"]
+      capacity_type  = "SPOT"
 
-      update_config = {
-        max_unavailable_percentage = 50
-      }
-
-      labels = {
-        workshop-default = "yes"
+      tags = {
+        ExtraTag = "hellowiz"
       }
     }
   }
 
-  tags = merge(local.tags, {
-    "karpenter.sh/discovery" = var.cluster_name
-  })
+  tags = local.tags
 }
-
