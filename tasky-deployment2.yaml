@@ -17,7 +17,7 @@ spec:
       serviceAccountName: webapp-sa #Service Account
       containers:
       - name: tasky
-        image: droog72/tasky:1.0
+        image: droog72/tasky:1.1
         env:
         - name: MONGODB_URI
           valueFrom:
