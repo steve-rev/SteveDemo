@@ -33,7 +33,7 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_instance" "my_instance" {
   ami             = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS
   instance_type   = "t2.micro"
-  key_name	  = "sjr"
+  key_name	  = "steve"
   iam_instance_profile = aws_iam_instance_profile.ec2allprofile.name
   #key_name        = aws_key_pair.ssh_keypair.key_name
   subnet_id       = module.vpc.public_subnets[0]
