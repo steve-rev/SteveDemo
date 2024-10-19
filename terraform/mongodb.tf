@@ -15,7 +15,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port = 27017
     to_port   = 27017
     protocol  = "tcp"
-    cidr_blocks = module.vpc.cidr
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
   egress {
     from_port = 0
@@ -24,18 +24,19 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
    }
 }
+
 #resource "aws_key_pair" "ssh_keypair" {
 #key_name   = "sjr"  # Replace with your desired key pair name
 #public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
 #}
- # EC2 Instance
+
 resource "aws_instance" "my_instance" {
   ami             = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS
   instance_type   = "t2.micro"
   key_name	  = "sjr"
   iam_instance_profile = aws_iam_instance_profile.ec2allprofile.name
   #key_name        = aws_key_pair.ssh_keypair.key_name
-  subnet_id       = aws_subnet.module.vpc.public_subnets
+  subnet_id       = module.vpc.public_subnets[0]
   security_groups  = [aws_security_group.ec2_sg.id]
   associate_public_ip_address = true
   user_data = <<-EOF
