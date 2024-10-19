@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongouri
+  namespace: default
+data:
+  mongodb_uri: mongodb://steve:demo@10.123.2.215
