@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mongouri
+  name: dbconnect
   namespace: default
 data:
-  mongodb_uri: mongodb://steve:demo
+  mongodb_uri: mongodb://steve:demo@10.123.1.26
