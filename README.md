@@ -2,4 +2,4 @@ EKS-Terraform-Jenkins
 
 "GitOps" procedure for provisioning EKS, MongoDB in AWS.
 
-To Do: fix DB secret in manifest, develop pipeline for building containerize application
+Creating a MongoDB user and setting the bind configuration is manual as of right now. The S3 bucket policy for the backup bucket was also done manually.  These will be added into Terraform.
